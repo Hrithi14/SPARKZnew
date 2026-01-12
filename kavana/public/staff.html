@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Cafeteria Management System</title>
+    <link rel="stylesheet" href="css/staff.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-utensils"></i>
+            <span>Staff Panel</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-tab="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="orders">
+                <i class="fas fa-receipt"></i>
+                <span>Orders</span>
+                <span class="badge" id="pendingBadge">0</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="holding">
+                <i class="fas fa-box"></i>
+                <span>Holding Area</span>
+                <span class="badge" id="holdingBadge">0</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="queue">
+                <i class="fas fa-users"></i>
+                <span>Queue Status</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="menu">
+                <i class="fas fa-hamburger"></i>
+                <span>Menu Management</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Back to App</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 id="pageTitle">Dashboard</h1>
+                <span class="current-time" id="currentTime"></span>
+            </div>
+            <div class="header-right">
+                <div class="connection-status" id="connectionStatus">
+                    <i class="fas fa-circle"></i>
+                    <span>Connected</span>
+                </div>
+                <div class="staff-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Staff</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Tab -->
+        <section class="tab-content active" id="dashboardTab">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalOrders">0</span>
+                        <span class="stat-label">Total Orders Today</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="completedOrders">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="pendingOrders">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="holdingOrders">0</span>
+                        <span class="stat-label">In Holding</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon teal">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalRevenue">₹0</span>
+                        <span class="stat-label">Revenue Today</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-history"></i> Recent Orders</h3>
+                    <button class="btn btn-sm" onclick="showTab('orders')">View All</button>
+                </div>
+                <div class="panel-body">
+                    <div class="orders-table-container">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Type</th>
+                                    <th>Section</th>
+                                    <th>Items</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersBody">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queue Overview -->
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-hamburger"></i> Cafeteria Slots</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="slots-grid" id="cafeteriaSlotsOverview">
+                            <!-- Slots will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-glass-water"></i> Lassi Corner Slots</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="slots-grid" id="lassiSlotsOverview">
+                            <!-- Slots will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Tab -->
+        <section class="tab-content" id="ordersTab">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-receipt"></i> All Orders</h3>
+                    <div class="filter-group">
+                        <select id="orderStatusFilter">
+                            <option value="all">All Status</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="ready">Ready</option>
+                            <option value="in-holding">In Holding</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <select id="orderSectionFilter">
+                            <option value="all">All Sections</option>
+                            <option value="cafeteria">Cafeteria</option>
+                            <option value="lassiCorner">Lassi Corner</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="orders-table-container">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Type</th>
+                                    <th>Section</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Order Time</th>
+                                    <th>Ready Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allOrdersBody">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Holding Area Tab -->
+        <section class="tab-content" id="holdingTab">
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-hamburger"></i> Cafeteria Holding Area</h3>
+                        <span class="count-badge" id="cafeteriaHoldingCount">0</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="holding-list" id="cafeteriaHolding">
+                            <!-- Holding orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-glass-water"></i> Lassi Corner Holding Area</h3>
+                        <span class="count-badge" id="lassiHoldingCount">0</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="holding-list" id="lassiHolding">
+                            <!-- Holding orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Queue Status Tab -->
+        <section class="tab-content" id="queueTab">
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-hamburger"></i> Cafeteria Queue</h3>
+                    </div>
+                    <div class="panel-body">
+                        <h4>Pickup Slots</h4>
+                        <div class="slots-grid large" id="cafeteriaSlots">
+                            <!-- Slots will be loaded here -->
+                        </div>
+                        <h4>Waiting Queue</h4>
+                        <div class="queue-info" id="cafeteriaQueueInfo">
+                            <span class="waiting-count">0 orders waiting</span>
+                            <span class="est-time">Est. wait: 0 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-glass-water"></i> Lassi Corner Queue</h3>
+                    </div>
+                    <div class="panel-body">
+                        <h4>Pickup Slots</h4>
+                        <div class="slots-grid large" id="lassiSlots">
+                            <!-- Slots will be loaded here -->
+                        </div>
+                        <h4>Waiting Queue</h4>
+                        <div class="queue-info" id="lassiQueueInfo">
+                            <span class="waiting-count">0 orders waiting</span>
+                            <span class="est-time">Est. wait: 0 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Management Tab -->
+        <section class="tab-content" id="menuTab">
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-hamburger"></i> Cafeteria Menu</h3>
+                        <button class="btn btn-sm btn-primary" onclick="showAddItemModal('cafeteria')">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="menu-list" id="cafeteriaMenuList">
+                            <!-- Menu items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-glass-water"></i> Lassi Corner Menu</h3>
+                        <button class="btn btn-sm btn-primary" onclick="showAddItemModal('lassiCorner')">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="menu-list" id="lassiMenuList">
+                            <!-- Menu items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div class="modal" id="orderDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button class="close-btn" onclick="closeOrderModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="orderDetailBody">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer" id="orderDetailFooter">
+                <!-- Actions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Menu Item Modal -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Menu Item</h3>
+                <button class="close-btn" onclick="closeAddItemModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <input type="hidden" id="itemSection">
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="itemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="itemDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (₹)</label>
+                            <input type="number" id="itemPrice" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prep Time (min)</label>
+                            <input type="number" id="itemPrepTime" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="itemCategory">
+                            <option value="main">Main</option>
+                            <option value="snacks">Snacks</option>
+                            <option value="beverages">Beverages</option>
+                            <option value="healthy">Healthy</option>
+                            <option value="lassi">Lassi</option>
+                            <option value="milkshakes">Milkshakes</option>
+                            <option value="refreshers">Refreshers</option>
+                            <option value="smoothies">Smoothies</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Emoji Icon</label>
+                        <input type="text" id="itemEmoji" placeholder="e.g., 🍔">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddItemModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveMenuItem()">Save Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Audio for notifications -->
+    <audio id="notificationSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleWAnN..." type="audio/wav">
+    </audio>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/staff.js"></script>
+</body>
+</html>

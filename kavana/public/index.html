@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Management System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-utensils"></i>
+            <span>Cafeteria</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-section="home">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="#" class="nav-link" data-section="cafeteria">
+                <i class="fas fa-hamburger"></i> Cafeteria
+            </a>
+            <a href="#" class="nav-link" data-section="lassi">
+                <i class="fas fa-glass-water"></i> Lassi Corner
+            </a>
+            <a href="#" class="nav-link" data-section="orders">
+                <i class="fas fa-receipt"></i> My Orders
+            </a>
+        </div>
+        <div class="nav-actions">
+            <div class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </div>
+            <div class="cart-icon" id="cartIcon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="homeSection" class="section active">
+            <div class="hero">
+                <h1>Welcome to Cafeteria</h1>
+                <p>Order delicious food & drinks with queue-free pickup!</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showSection('cafeteria')">
+                        <i class="fas fa-hamburger"></i> Explore Cafeteria
+                    </button>
+                    <button class="btn btn-secondary" onclick="showSection('lassi')">
+                        <i class="fas fa-glass-water"></i> Lassi Corner
+                    </button>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>On-Spot Orders</h3>
+                    <p>Order now and pick up when ready</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Pre-Orders</h3>
+                    <p>Schedule your pickup time</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users-slash"></i>
+                    <h3>No Queues</h3>
+                    <p>Smart slot management system</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Real-Time Updates</h3>
+                    <p>Get notified when your order is ready</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cafeteria Menu Section -->
+        <section id="cafeteriaSection" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-hamburger"></i> Cafeteria Menu</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="main">Main</button>
+                    <button class="filter-btn" data-category="snacks">Snacks</button>
+                    <button class="filter-btn" data-category="beverages">Beverages</button>
+                    <button class="filter-btn" data-category="healthy">Healthy</button>
+                </div>
+            </div>
+            <div class="menu-grid" id="cafeteriaMenu">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Lassi Corner Section -->
+        <section id="lassiSection" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-glass-water"></i> Lassi Corner</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="lassi">Lassi</button>
+                    <button class="filter-btn" data-category="milkshakes">Milkshakes</button>
+                    <button class="filter-btn" data-category="refreshers">Refreshers</button>
+                    <button class="filter-btn" data-category="smoothies">Smoothies</button>
+                </div>
+            </div>
+            <div class="menu-grid" id="lassiMenu">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </section>
+
+        <!-- My Orders Section -->
+        <section id="ordersSection" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-receipt"></i> My Orders</h2>
+            </div>
+            <div class="orders-tabs">
+                <button class="tab-btn active" data-tab="active">Active Orders</button>
+                <button class="tab-btn" data-tab="history">Order History</button>
+            </div>
+            <div class="orders-list" id="ordersList">
+                <!-- Orders will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
+            <button class="close-btn" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be loaded here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <div class="order-type-selector">
+                <label>
+                    <input type="radio" name="orderType" value="onspot" checked>
+                    <span>On-Spot Order</span>
+                </label>
+                <label>
+                    <input type="radio" name="orderType" value="preorder">
+                    <span>Pre-Order</span>
+                </label>
+            </div>
+            <div class="preorder-time" id="preorderTime" style="display: none;">
+                <label>Select Pickup Time:</label>
+                <input type="time" id="pickupTimeInput" min="" />
+            </div>
+            <button class="btn btn-primary btn-block" id="placeOrderBtn" onclick="placeOrder()">
+                <i class="fas fa-check"></i> Place Order
+            </button>
+        </div>
+    </aside>
+
+    <!-- Notification Panel -->
+    <aside class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            <button class="close-btn" onclick="toggleNotifications()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </aside>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbotWidget">
+        <div class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()">
+            <i class="fas fa-robot"></i>
+            <span class="chatbot-tooltip">Need help choosing?</span>
+        </div>
+        <div class="chatbot-container" id="chatbotContainer">
+            <div class="chatbot-header">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-info">
+                    <h4>Food Assistant</h4>
+                    <span class="status">Online</span>
+                </div>
+                <button class="close-btn" onclick="toggleChatbot()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <!-- Chat messages will be loaded here -->
+            </div>
+            <div class="chatbot-options" id="chatbotOptions">
+                <!-- Quick options will be loaded here -->
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeypress(event)">
+                <button class="voice-btn" id="voiceBtn" onclick="startVoiceInput()">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="send-btn" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Order Placed!</h3>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holding Area Modal -->
+    <div class="modal" id="holdingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-box"></i> Order in Holding Area</h3>
+                <button class="close-btn" onclick="closeHoldingModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Your order is waiting for you in the holding area.</p>
+                <p>Click below to request a pickup slot when you arrive.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeHoldingModal()">Later</button>
+                <button class="btn btn-primary" id="requestPickupBtn">
+                    <i class="fas fa-hand-paper"></i> Request Pickup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/chatbot.js"></script>
+</body>
+</html>
