@@ -79,4 +79,10 @@ Before you begin, ensure you have the following installed:
 * **Action:** Click this link **once** to upload the sample menu data to your Firebase Firestore database.
 
 ---
-
+/// related chatbot 
+<iframe
+    src="https://www.chatbase.co/chatbot-iframe/7aDaJTh3d8xOwyGHWsEqE"
+    width="100%"
+    style="height: 100%; min-height: 700px"
+    frameborder="0"
+></iframe>
