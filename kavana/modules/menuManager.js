@@ -529,8 +529,8 @@ class MenuManager {
 
     getAllAvailableItems() {
         return [
-            ...this.menu.cafeteria.items.filter(i => i.available),
-            ...this.menu.lassiCorner.items.filter(i => i.available)
+            ...this.menu.cafeteria.items.filter(i => i.available).map(i => ({ ...i, section: 'cafeteria' })),
+            ...this.menu.lassiCorner.items.filter(i => i.available).map(i => ({ ...i, section: 'lassi' }))
         ];
     }
 }

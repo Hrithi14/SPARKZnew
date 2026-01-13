@@ -5,6 +5,25 @@ const cors = require('cors');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
+// [ADDED] Firebase Imports
+const admin = require('firebase-admin');
+
+// [ADDED] Initialize Firebase
+// NOTE: Ensure 'serviceAccountKey.json' is in the same folder as this file!
+try {
+    const serviceAccount = require('./serviceAccountKey.json');
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+    console.log("🔥 Firebase Admin Initialized Successfully!");
+} catch (error) {
+    console.warn("⚠️ Warning: Could not connect to Firebase.");
+    console.warn("   Make sure 'serviceAccountKey.json' is present if you want to use the database features.");
+}
+
+// [ADDED] Database Reference
+const db = admin.firestore();
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
@@ -168,6 +187,45 @@ app.post('/api/user/preferences', (req, res) => {
     res.json({ success: true });
 });
 
+// ==========================================
+// [ADDED] HACKATHON: FIREBASE SYNC ROUTE
+// ==========================================
+app.get('/api/firebase/seed', async (req, res) => {
+    try {
+        if (!admin.apps.length) throw new Error("Firebase not initialized.");
+
+        // 1. Get current data from MenuManager
+        const fullMenu = menuManager.getFullMenu();
+
+        // 2. Prepare a batch write
+        const batch = db.batch();
+        
+        // 3. Loop through sections and add them to the batch
+        for (const [section, items] of Object.entries(fullMenu)) {
+            // This will overwrite the document in 'hackathon_sample_data' collection
+            const docRef = db.collection('hackathon_sample_data').doc(section);
+            batch.set(docRef, { items: items });
+        }
+
+        // 4. Commit to Firebase
+        await batch.commit();
+
+        console.log("✅ Data synced to Firebase successfully.");
+        res.json({ 
+            success: true, 
+            message: "Sample data successfully uploaded to Firebase!",
+            target_collection: "hackathon_sample_data"
+        });
+
+    } catch (error) {
+        console.error("❌ Firebase Sync Error:", error.message);
+        res.status(500).json({ 
+            error: "Failed to sync with Firebase", 
+            details: error.message 
+        });
+    }
+});
+
 // ========================
 // SOCKET.IO EVENTS
 // ========================
@@ -273,6 +331,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`🍔 Cafeteria Management System running on http://localhost:${PORT}`);
     console.log(`📊 Staff Dashboard available at http://localhost:${PORT}/staff`);
+    console.log(`🔥 To sync sample data to DB, visit: http://localhost:${PORT}/api/firebase/seed`);
 });
 
 module.exports = { app, io };

@@ -59,7 +59,26 @@ function toggleChatbot() {
     if (chatbotOpen && conversationHistory.length === 0) {
         // Start conversation
         startConversation();
+    } else if (!chatbotOpen) {
+        // Clear conversation when closing
+        clearChatMessages();
     }
+}
+
+// Clear chat messages
+function clearChatMessages() {
+    conversationHistory = [];
+    currentMood = null;
+    currentTaste = null;
+    document.getElementById('chatbotMessages').innerHTML = '';
+    document.getElementById('chatbotOptions').innerHTML = '';
+    document.getElementById('chatbotOptions').classList.remove('show');
+}
+
+// Refresh conversation
+function refreshChatbot() {
+    clearChatMessages();
+    startConversation();
 }
 
 function showChatbotTooltip() {
@@ -279,26 +298,19 @@ function handleOptionClick(option, type) {
         case 'more':
             sendToBackend('show me more options', currentMood, currentTaste);
             break;
-
-        case 'cart':
-        case 'order':
-            toggleChatbot();
-            toggleCart();
-            break;
-
-        case 'complete':
-            toggleChatbot();
-            toggleCart();
-            break;
-
-        default:
-            sendToBackend(option.value, currentMood, currentTaste);
     }
 }
 
 function addSuggestionToCart(itemId, section) {
-    // Find item in menu
+    // Get the item from the current menu
     const menuSection = section === 'cafeteria' ? menu.cafeteria : menu.lassiCorner;
+    
+    if (!menuSection) {
+        console.error(`Section '${section}' not found in menu`);
+        addMessage(`Sorry, I couldn't find that item. Please try again.`, 'bot');
+        return;
+    }
+
     const item = menuSection.items.find(i => i.id === itemId);
 
     if (item) {
@@ -307,6 +319,9 @@ function addSuggestionToCart(itemId, section) {
         
         // Record positive feedback
         recordFeedback(itemId, true);
+    } else {
+        console.error(`Item '${itemId}' not found in section '${section}'`);
+        addMessage(`Sorry, I couldn't find that item. Please try again.`, 'bot');
     }
 }
 
