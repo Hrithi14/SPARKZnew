@@ -78,14 +78,7 @@ Before you begin, ensure you have the following installed:
 * **URL:** [http://localhost:3000/api/firebase/seed](http://localhost:3000/api/firebase/seed)
 * **Action:** Click this link **once** to upload the sample menu data to your Firebase Firestore database.
 
----
-/// related chatbot 
-<iframe
-    src="https://www.chatbase.co/chatbot-iframe/7aDaJTh3d8xOwyGHWsEqE"
-    width="100%"
-    style="height: 100%; min-height: 700px"
-    frameborder="0"
-></iframe>
+
 
 
 https://drive.google.com/file/d/1IZDZEm2MK8KT_YxaHG98en2uuwWRxrUV/view?usp=sharing this the chatbot demo
